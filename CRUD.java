@@ -3,7 +3,7 @@ import java.io.EOFException;
 import java.io.RandomAccessFile;
 
 public class CRUD {
-    static void create(Livro l1) throws Exception {
+    static void create(Partida p1) throws Exception {
         RandomAccessFile arq = new RandomAccessFile("db\\banco.db", "rw");
         byte[] b;
         int uID = 0;
@@ -16,12 +16,12 @@ public class CRUD {
             arq.writeInt(uID);
         }
         try {
-            l1.setID(++uID);
+            p1.setID(++uID);
             arq.seek(0);
             arq.writeInt(uID);
             arq.seek(arq.length());
             arq.writeChars(" ");
-            b = l1.toByteArray();
+            b = p1.toByteArray();
             arq.writeInt(b.length);
             arq.write(b);
 
@@ -31,9 +31,9 @@ public class CRUD {
         }
     }
 
-    static Livro read(int id) throws Exception {
+    static Partida read(int id) throws Exception {
         RandomAccessFile arq = new RandomAccessFile("db\\banco.db", "rw");
-        Livro l1 = new Livro();
+        Partida p1 = new Partida();
         byte[] b;
         int len;
 
@@ -45,10 +45,10 @@ public class CRUD {
                     len = arq.readInt();
                     b = new byte[len];
                     arq.read(b);
-                    l1.fromByteArray(b);
-                    if (l1.ehIgual(id)) {
+                    p1.fromByteArray(b);
+                    if (p1.ehIgual(id)) {
                         arq.close();
-                        return l1;
+                        return p1;
                     }
                 } else {
                     len = arq.readInt();
@@ -65,9 +65,10 @@ public class CRUD {
         return null;
     }
 
-    static boolean update(int id, String newName, int newPages) throws Exception {
+    static boolean update(int id, Data newData, String newMandante, String newVisitante, int newGMandante,
+            int newGVisitante, String newTorneio) throws Exception {
         RandomAccessFile arq = new RandomAccessFile("db\\banco.db", "rw");
-        Livro l1 = new Livro();
+        Partida p1 = new Partida();
         byte[] b;
         int len;
 
@@ -80,22 +81,24 @@ public class CRUD {
                     len = arq.readInt();
                     b = new byte[len];
                     arq.read(b);
-                    l1.fromByteArray(b);
-                    if (l1.ehIgual(id)) {
-                        Livro l2 = new Livro(newName, newPages);
-                        l2.setID(l1.getID());
-                        if (newName.length() <= l1.getName().length()) {
+                    p1.fromByteArray(b);
+                    if (p1.ehIgual(id)) {
+                        Partida p2 = new Partida(newData, newMandante, newVisitante, newGMandante, newGVisitante,
+                                newTorneio);
+                        p2.setID(p1.getID());
+                        if (newMandante.length() + newVisitante.length() + newTorneio.length() <= p1.getMandante()
+                                .length() + p1.getVisitante().length() + p1.getTorneio().length()) {
                             arq.seek(lapide);
                             arq.readChar();
                             arq.readInt();
-                            b = l2.toByteArray();
+                            b = p2.toByteArray();
                             arq.write(b);
                         } else {
                             arq.seek(lapide);
                             arq.writeChars("*");
                             arq.seek(arq.length());
                             arq.writeChars(" ");
-                            b = l2.toByteArray();
+                            b = p2.toByteArray();
                             arq.writeInt(b.length);
                             arq.write(b);
                         }
@@ -120,7 +123,7 @@ public class CRUD {
 
     static boolean delete(int id) throws Exception {
         RandomAccessFile arq = new RandomAccessFile("db\\banco.db", "rw");
-        Livro l1 = new Livro();
+        Partida p1 = new Partida();
         byte[] b;
         int len;
 
@@ -133,8 +136,8 @@ public class CRUD {
                     len = arq.readInt();
                     b = new byte[len];
                     arq.read(b);
-                    l1.fromByteArray(b);
-                    if (l1.ehIgual(id)) {
+                    p1.fromByteArray(b);
+                    if (p1.ehIgual(id)) {
                         arq.seek(lapide);
                         arq.writeChars("*");
                         arq.close();
