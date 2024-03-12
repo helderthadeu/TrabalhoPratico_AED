@@ -19,7 +19,7 @@ public class Data {
         return mes;
     }
 
-    public Data(int d, int a, int m) {
+    public Data(int d, int m, int a) {
         this.ano = a;
         this.dia = d;
         this.mes = m;
@@ -63,7 +63,7 @@ public class Data {
 
 
         // diasAno = (this.ano % 4 == 0) ? 366 : 365;
-        diasAno = (this.ano/4)*366 + (this.ano - (this.ano/4))*365;
+        diasAno = (int)((this.ano)*365.25);
 
         for (int i = 1; i < this.mes; i++) {
             switch (i) {
@@ -81,16 +81,15 @@ public class Data {
                     break;
             }
         }
-
+        
         return this.dia + diasAno + diasMes;
     }
 
-    public Data toDate(int dias) {
-        Data data = new Data();
-        int ano = dias / 365;
-        int mes = (dias % 365) / 30;
-        int dia = ((dias % 365) % 30);
-
-        return data;
+    public void toDate(int dias) {
+        
+        this.ano = (int)(dias / 365.25);
+        int temp = (int)(dias % 365.25);
+        this.mes = (int)((temp) / 30.416666667)+1;
+        this.dia = (int)(((temp) % 30));
     }
 }
