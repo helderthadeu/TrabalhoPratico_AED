@@ -49,7 +49,8 @@ public class Data {
     }
 
     /**
-     * Retorna a data em uma string no formato dd/mm/aaaa
+     *  
+     *  @param Retorna a data em uma string no formato dd/mm/aaaa
      */
     public String toString() {
         return this.dia + "/" + this.mes + "/" + this.ano;
@@ -57,19 +58,19 @@ public class Data {
 
     /**
      * Função que converte a data para números de dias
-     * 
      * @return retorna o número de dias
      */
     public int toDias() {
-
-        int diasMes = 0, diasAno;
 
         LocalDate dataOriginal = LocalDate.of(this.ano,this.mes,this.dia);  
         LocalDate anoZero = LocalDate.of( 0,1,1);
 
         return (int)(ChronoUnit.DAYS.between(anoZero, dataOriginal)); 
     }
-
+    /**
+     * Função que converte uma quantidade de dias para a data do elemento atual
+     * @param dias Número de dias a ser convertido
+     */
     public void toDate(long dias) {
         LocalDate dataConvet = converterDiasParaData((long)(dias));
         this.dia = dataConvet.getDayOfMonth();
@@ -77,7 +78,12 @@ public class Data {
         this.ano = dataConvet.getYear();
         
     }
-    private static LocalDate converterDiasParaData(long dias) {
+    /**
+     * Função auxiliar para retornar a data baseada no ano 0
+     * @param dias número de dias a ser convertido emd ata
+     * @return Retorna a data no formato LocalDate
+     */
+    private LocalDate converterDiasParaData(long dias) {
         LocalDate dataBase = LocalDate.of( 0,1,1).plusDays(dias);
         return dataBase;
     }

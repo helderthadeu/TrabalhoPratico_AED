@@ -87,7 +87,7 @@ public class Partida {
     }
 
     public String toString() {
-        return "id: " + this.id + "| Data: " + this.toString() + "| Mandante: " + this.mandante + " | Visitante: "
+        return "id: " + this.id + "| Data: " + this.data.toString() + "| Mandante: " + this.mandante + " | Visitante: "
                 + this.visitante + "| Placar: " + this.golsMandante + " X " + this.golsVisitante + "| Torneio: "
                 + this.torneio;
     }
