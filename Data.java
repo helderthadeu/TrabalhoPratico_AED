@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 public class Data {
     private int dia;
     private int mes;
@@ -61,35 +64,21 @@ public class Data {
 
         int diasMes = 0, diasAno;
 
+        LocalDate dataOriginal = LocalDate.of(this.ano,this.mes,this.dia);  
+        LocalDate anoZero = LocalDate.of( 0,1,1);
 
-        // diasAno = (this.ano % 4 == 0) ? 366 : 365;
-        diasAno = (int)((this.ano)*365.25);
-
-        for (int i = 1; i < this.mes; i++) {
-            switch (i) {
-                case 1, 3, 5, 7, 8, 10, 12:
-                    diasMes += 31;
-                    break;
-                case 4, 6, 9, 11:
-                    diasMes += 30;
-                    break;
-                case 2:
-                    diasMes += (this.ano % 4 == 0) ? 29 : 28;
-                    break;
-                default:
-                    diasMes += 30;
-                    break;
-            }
-        }
-        
-        return this.dia + diasAno + diasMes;
+        return (int)(ChronoUnit.DAYS.between(anoZero, dataOriginal)); 
     }
 
-    public void toDate(int dias) {
+    public void toDate(long dias) {
+        LocalDate dataConvet = converterDiasParaData((long)(dias));
+        this.dia = dataConvet.getDayOfMonth();
+        this.mes = dataConvet.getMonthValue();
+        this.ano = dataConvet.getYear();
         
-        this.ano = (int)(dias / 365.25);
-        int temp = (int)(dias % 365.25);
-        this.mes = (int)((temp) / 30.416666667)+1;
-        this.dia = (int)(((temp) % 30));
+    }
+    private static LocalDate converterDiasParaData(long dias) {
+        LocalDate dataBase = LocalDate.of( 0,1,1).plusDays(dias);
+        return dataBase;
     }
 }
