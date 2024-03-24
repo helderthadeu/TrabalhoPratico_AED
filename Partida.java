@@ -46,6 +46,15 @@ public class Partida {
         this.data = new Data(dia, mes, ano);
     }
 
+    public void setDatacomString(String dataString){
+        int aux1 = Integer.parseInt(dataString.substring(0,4));
+        int aux2 = Integer.parseInt(dataString.substring(5,7));
+        int aux3 = Integer.parseInt(dataString.substring(9,10));
+
+        this.data = new Data(aux1, aux2, aux3);
+
+    }
+
     public String getMandante() {
         return mandante;
     }

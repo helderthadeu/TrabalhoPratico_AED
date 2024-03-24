@@ -10,7 +10,7 @@ public class CRUD {
         // try {
         try {
             arq.seek(0);
-            uID = arq.readInt();
+            uID = arq.readInt(); 
         } catch (EOFException e) {
             uID = 0;
             arq.writeInt(uID);

@@ -22,10 +22,10 @@ public class Data {
         return mes;
     }
 
-    public Data(int d, int m, int a) {
+    public Data(int a, int m, int d) {
         this.ano = a;
-        this.dia = d;
         this.mes = m;
+        this.dia = d;
     }
 
     /**
