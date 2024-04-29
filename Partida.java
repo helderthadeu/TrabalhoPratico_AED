@@ -39,10 +39,14 @@ public class Partida {
     }
 
     public Data getData() {
-        return data;
+        return this.data;
     }
 
-    public void setData(int dia, int mes, int ano) {
+    public int getAno(){
+        return this.data.getAno();
+    }
+
+    public void setData(int ano, int mes, int dia) {
         this.data = new Data(dia, mes, ano);
     }
 
