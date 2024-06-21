@@ -3,6 +3,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import com.definicoes.Data;
+import com.definicoes.Partida;
+
 public class CRUD {
     /**
      * Cria um elemento de Partida no arquivo de dados
@@ -11,7 +14,7 @@ public class CRUD {
      * @return retorna a posição da partida
      * @throws Exception
      */
-    static public long create(Partida p1) throws Exception {
+    static public long create(Partida p1) throws IOException {
         RandomAccessFile arq = new RandomAccessFile("db\\banco.db", "rw");
         byte[] b;
         int uID = 0;
@@ -23,21 +26,17 @@ public class CRUD {
             uID = 0;
             arq.writeInt(uID);
         }
-        try {
-            p1.setID(++uID);
-            arq.seek(0);
-            arq.writeInt(uID);
-            arq.seek(arq.length());
-            posElemento = arq.getFilePointer();
-            arq.writeChars(" ");
-            b = p1.toByteArray();
-            arq.writeInt(b.length);
-            arq.write(b);
 
-            arq.close();
-        } catch (Exception e) {
-            e.getMessage();
-        }
+        p1.setID(++uID);
+        arq.seek(0);
+        arq.writeInt(uID);
+        arq.seek(arq.length());
+        posElemento = arq.getFilePointer();
+        arq.writeChars(" ");
+        b = p1.toByteArray();
+        arq.writeInt(b.length);
+        arq.write(b);
+        arq.close();
 
         return posElemento;
     }
