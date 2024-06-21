@@ -1,3 +1,4 @@
+package com.definicoes;
 
 /**
  * Arquivo que contém a classe da Partida e utilizada para datas.
@@ -5,6 +6,10 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+
+import com.encriptar.Criptografar;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
@@ -18,7 +23,7 @@ public class Partida {
     protected String torneio;
 
     public Partida() {
-
+        data = new Data();
     }
 
     public Partida(Data data, String mandante, String visitante, int golsMandante, int golsVisitante, String torneio) {
@@ -42,7 +47,7 @@ public class Partida {
         return this.data;
     }
 
-    public int getAno(){
+    public int getAno() {
         return this.data.getAno();
     }
 
@@ -50,10 +55,10 @@ public class Partida {
         this.data = new Data(dia, mes, ano);
     }
 
-    public void setDatacomString(String dataString){
-        int aux1 = Integer.parseInt(dataString.substring(0,4));
-        int aux2 = Integer.parseInt(dataString.substring(5,7));
-        int aux3 = Integer.parseInt(dataString.substring(9,10));
+    public void setDatacomString(String dataString) {
+        int aux1 = Integer.parseInt(dataString.substring(0, 4));
+        int aux2 = Integer.parseInt(dataString.substring(5, 7));
+        int aux3 = Integer.parseInt(dataString.substring(8, 10));
 
         this.data = new Data(aux1, aux2, aux3);
 
@@ -105,12 +110,34 @@ public class Partida {
                 + this.torneio;
     }
 
+    public String toStringLimpa() {
+        return this.id + "@" + this.data.toDias() + "@" + this.mandante + "@" + this.visitante + "@"
+                + this.golsMandante
+                + "@" + this.golsVisitante
+                + "@" + this.torneio + "&";
+    }
+
+    public void stringToPartida(String partida) {
+        String dados[] = partida.split("@");
+        this.id = Integer.parseInt(dados[0]);
+        this.data.toDate(Integer.parseInt(dados[1]));
+        this.mandante = dados[2];
+        this.visitante = dados[3];
+        this.golsMandante = Integer.parseInt(dados[4]);
+        this.golsVisitante = Integer.parseInt(dados[5]);
+        this.torneio = dados[6];
+
+    }
+
+    public long getDias() {
+        return data.toDias();
+    }
+
     /**
      * 
      * @param id id do elemente a ser comparado
      * @return true caso os elementos sejam iguais
      */
-
     public boolean ehIgual(int id) {
         return id == this.id;
     }
@@ -119,11 +146,9 @@ public class Partida {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(this.id);
-        dos.writeInt(this.data.getDia());
-        dos.writeInt(this.data.getMes());
-        dos.writeInt(this.data.getAno());
-        dos.writeUTF(this.mandante);
-        dos.writeUTF(this.visitante);
+        dos.writeLong(data.toDias());
+        dos.writeUTF(Criptografar.criptografarSenhas(this.mandante));
+        dos.writeUTF(Criptografar.criptografarSenhas(this.visitante));
         dos.writeInt(this.golsMandante);
         dos.writeInt(this.golsVisitante);
         dos.writeUTF(this.torneio);
@@ -133,13 +158,38 @@ public class Partida {
     public void fromByteArray(byte[] b) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
         DataInputStream dis = new DataInputStream(bais);
+
         this.id = dis.readInt();
-        this.data = new Data(dis.readInt(), dis.readInt(), dis.readInt());
-        this.mandante = dis.readUTF();
-        this.visitante = dis.readUTF();
+        // this.data = new Data(dis.readInt(), dis.readInt(), dis.readInt());
+        this.data = new Data(dis.readLong());
+
+        this.mandante = Criptografar.descriptografarSenhas(dis.readUTF());
+        this.visitante = Criptografar.descriptografarSenhas(dis.readUTF());
         this.golsMandante = dis.readInt();
         this.golsVisitante = dis.readInt();
         this.torneio = dis.readUTF();
 
     }
+
+    static public String puxaPartida(long pos, RandomAccessFile file) throws IOException {
+        Partida temp = null;
+        byte bt[];
+        file.seek(pos);
+        char lapide = ' ';
+        int tamElemento = 0;
+        if (file.getFilePointer() < file.length()) {
+
+            lapide = file.readChar();
+            tamElemento = file.readInt();
+            bt = new byte[tamElemento];
+            file.read(bt);
+
+            temp = new Partida();
+            temp.fromByteArray(bt);
+
+        }
+
+        return lapide + "@" + tamElemento + "@" + temp.toStringLimpa();
+    }
+
 }

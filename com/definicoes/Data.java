@@ -1,6 +1,6 @@
+package com.definicoes;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-
 
 public class Data {
     private int dia;
@@ -9,6 +9,17 @@ public class Data {
 
     public Data() {
 
+    }
+
+    public Data(int a, int m, int d) {
+        this.ano = a;
+        this.mes = m;
+        this.dia = d;
+        
+    }
+
+    public Data(long dias) {
+        this.toDate(dias);
     }
 
     public int getDia() {
@@ -21,12 +32,6 @@ public class Data {
 
     public int getMes() {
         return mes;
-    }
-
-    public Data(int a, int m, int d) {
-        this.ano = a;
-        this.mes = m;
-        this.dia = d;
     }
 
     /**
@@ -50,8 +55,8 @@ public class Data {
     }
 
     /**
-     *  
-     *  @param Retorna a data em uma string no formato dd/mm/aaaa
+     * 
+     * @param Retorna a data em uma string no formato dd/mm/aaaa
      */
     public String toString() {
         return this.dia + "/" + this.mes + "/" + this.ano;
@@ -59,33 +64,38 @@ public class Data {
 
     /**
      * Função que converte a data para números de dias
+     * 
      * @return retorna o número de dias
      */
-    public int toDias() {
+    public long toDias() {
 
-        LocalDate dataOriginal = LocalDate.of(this.ano,this.mes,this.dia);  
-        LocalDate anoZero = LocalDate.of( 0,1,1);
+        LocalDate dataOriginal = LocalDate.of(this.ano, this.mes, this.dia);
+        LocalDate anoZero = LocalDate.of(1800, 1, 1);
 
-        return (int)(ChronoUnit.DAYS.between(anoZero, dataOriginal)); 
+        return (ChronoUnit.DAYS.between(anoZero, dataOriginal));
     }
+
     /**
      * Função que converte uma quantidade de dias para a data do elemento atual
+     * 
      * @param dias Número de dias a ser convertido
      */
     public void toDate(long dias) {
-        LocalDate dataConvet = converterDiasParaData((long)(dias));
+        LocalDate dataConvet = converterDiasParaData((long) (dias));
         this.dia = dataConvet.getDayOfMonth();
         this.mes = dataConvet.getMonthValue();
         this.ano = dataConvet.getYear();
-        
+
     }
+
     /**
      * Função auxiliar para retornar a data baseada no ano 0
+     * 
      * @param dias número de dias a ser convertido emd ata
      * @return Retorna a data no formato LocalDate
      */
     private LocalDate converterDiasParaData(long dias) {
-        LocalDate dataBase = LocalDate.of( 0,1,1).plusDays(dias);
+        LocalDate dataBase = LocalDate.of(1800, 1, 1).plusDays(dias);
         return dataBase;
     }
 }
